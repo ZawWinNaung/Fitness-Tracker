@@ -1,9 +1,7 @@
 package com.zawwinnaung.fitnesstracker.domain.model
 
-data class User(
-    val id: Int,
+data class RegisterRequest(
     val userName: String,
     val email: String,
-    val dateOfBirth: String,
-    val gender: String
+    val password: String,
 )
