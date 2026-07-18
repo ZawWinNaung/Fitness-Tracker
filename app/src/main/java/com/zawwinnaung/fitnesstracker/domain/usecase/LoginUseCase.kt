@@ -1,6 +1,6 @@
 package com.zawwinnaung.fitnesstracker.domain.usecase
 
-import com.zawwinnaung.fitnesstracker.data.repo.AuthRepository
+import com.zawwinnaung.fitnesstracker.data.repository.AuthRepository
 import com.zawwinnaung.fitnesstracker.domain.model.User
 import com.zawwinnaung.fitnesstracker.domain.result.NetworkResult
 import com.zawwinnaung.fitnesstracker.util.UserSessionManager

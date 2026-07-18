@@ -28,7 +28,11 @@ fun AuthNavigation() {
                     }
 
                     is Route.Register -> NavEntry(key = key) {
-                        RegisterScreen()
+                        RegisterScreen(onNavigateToLogin = {
+                            if (authBackStack.isNotEmpty()) {
+                                authBackStack.removeAt(authBackStack.lastIndex)
+                            }
+                        })
                     }
 
                     else -> throw RuntimeException("Invalid")

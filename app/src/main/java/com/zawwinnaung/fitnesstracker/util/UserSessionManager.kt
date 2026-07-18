@@ -17,7 +17,7 @@ class UserSessionManager(context: Context) {
     ) {
         prefs.edit().apply {
             putInt("user_id", user.id)
-            putString("full_name", user.fullName)
+            putString("user_name", user.userName)
             putString("email", user.email)
             putString("dob", user.dateOfBirth)
             putString("sex", user.gender)
