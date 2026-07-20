@@ -6,4 +6,7 @@ data class User(
     val email: String,
     val dateOfBirth: String,
     val gender: String
-)
+) {
+    val dobDisplay: String get() = dateOfBirth.ifBlank { "Not set" }
+    val genderDisplay: String get() = gender.ifBlank { "Not set" }
+}
