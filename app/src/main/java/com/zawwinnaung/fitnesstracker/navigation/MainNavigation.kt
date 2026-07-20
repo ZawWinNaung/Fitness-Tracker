@@ -20,6 +20,7 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import com.zawwinnaung.fitnesstracker.screen.profile.ProfileScreen
 
 @Composable
 fun MainNavigation(onLogout: () -> Unit) {
@@ -70,12 +71,9 @@ fun MainNavigation(onLogout: () -> Unit) {
 
                     is Route.Profile -> {
                         NavEntry(key = key) {
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text("Profile")
-                            }
+                            ProfileScreen(
+                                onNavigateToUpdate = {}
+                            )
                         }
                     }
 
@@ -84,6 +82,4 @@ fun MainNavigation(onLogout: () -> Unit) {
             }
         )
     }
-
-
 }
