@@ -1,4 +1,4 @@
-package com.zawwinnaung.fitnesstracker.screen.root
+package com.zawwinnaung.fitnesstracker.ui.screen.root
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -30,8 +30,4 @@ class NavigationRootViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = themePreferences.isDarkMode()
         )
-
-    fun logout() {
-        userSessionManager.clearSession()
-    }
 }

@@ -21,4 +21,12 @@ interface ApiService {
         @Field("email") email: String,
         @Field("password") password: String
     ): BaseResponse<Unit>
+
+    @FormUrlEncoded
+    @POST("update_profile.php")
+    suspend fun updateProfile(
+        @Field("user_id") userId: Int,
+        @Field("dob") dob: String,
+        @Field("sex") sex: String
+    ): BaseResponse<UserDto>
 }

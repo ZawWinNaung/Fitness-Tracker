@@ -1,4 +1,4 @@
-package com.zawwinnaung.fitnesstracker.screen.login
+package com.zawwinnaung.fitnesstracker.ui.screen.login
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -8,10 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -30,6 +28,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.zawwinnaung.fitnesstracker.ui.components.LoadingProgress
 
 @Composable
 fun LoginScreen(
@@ -112,7 +111,7 @@ fun LoginScreen(
             enabled = !viewModel.isLoading
         ) {
             if (viewModel.isLoading) {
-                CircularProgressIndicator(modifier = Modifier.size(24.dp), color = Color.White)
+                LoadingProgress()
             } else {
                 Text("Login", fontSize = 16.sp)
             }

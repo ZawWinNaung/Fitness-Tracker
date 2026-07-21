@@ -8,9 +8,9 @@ import com.zawwinnaung.fitnesstracker.domain.model.User
 import com.zawwinnaung.fitnesstracker.domain.result.NetworkResult
 import javax.inject.Inject
 
-class AuthRepositoryImpl @Inject constructor(
+class ApiRepositoryImpl @Inject constructor(
     private val api: ApiService
-) : AuthRepository, BaseRepository() {
+) : ApiRepository, BaseRepository() {
     override suspend fun login(
         email: String,
         password: String
@@ -37,6 +37,26 @@ class AuthRepositoryImpl @Inject constructor(
                 email = request.email,
                 password = request.password
             )
+        }
+    }
+
+    override suspend fun updateProfile(
+        userId: Int,
+        dob: String,
+        sex: String
+    ): NetworkResult<User> {
+        return safeApiCall {
+            api.updateProfile(userId, dob, sex)
+        }.let { result ->
+            when (result) {
+                is NetworkResult.Success -> {
+                    NetworkResult.Success(result.data.toDomain(), result.message)
+                }
+
+                is NetworkResult.Error -> {
+                    NetworkResult.Error(result.message)
+                }
+            }
         }
     }
 }

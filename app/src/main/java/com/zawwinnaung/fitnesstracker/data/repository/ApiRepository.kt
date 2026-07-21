@@ -4,9 +4,10 @@ import com.zawwinnaung.fitnesstracker.domain.model.RegisterRequest
 import com.zawwinnaung.fitnesstracker.domain.model.User
 import com.zawwinnaung.fitnesstracker.domain.result.NetworkResult
 
-interface AuthRepository {
+interface ApiRepository {
     suspend fun login(email: String, password: String): NetworkResult<User>
 
     suspend fun register(request: RegisterRequest): NetworkResult<Unit>
 
+    suspend fun updateProfile(userId: Int, dob: String, sex: String): NetworkResult<User>
 }

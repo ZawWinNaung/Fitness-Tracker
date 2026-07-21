@@ -13,19 +13,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import com.zawwinnaung.fitnesstracker.screen.profile.ProfileScreen
+import com.zawwinnaung.fitnesstracker.ui.screen.home.HomeScreen
+import com.zawwinnaung.fitnesstracker.ui.screen.profile.ProfileScreen
+import com.zawwinnaung.fitnesstracker.ui.screen.updateprofile.UpdateProfileScreen
 
 @Composable
-fun MainNavigation(onLogout: () -> Unit) {
+fun MainNavigation() {
     val homeBackStack = rememberNavBackStack(Route.Home)
-    val settingsBackStack = rememberNavBackStack(Route.Profile)
+    val profileBackStack = rememberNavBackStack(Route.Profile)
 
     var currentTab by remember { mutableStateOf<NavKey>(Route.Home) }
 
@@ -35,51 +36,55 @@ fun MainNavigation(onLogout: () -> Unit) {
 
     val activeBackStack = when (currentTab) {
         is Route.Home -> homeBackStack
-        is Route.Profile -> settingsBackStack
+        is Route.Profile -> profileBackStack
         else -> homeBackStack
     }
-
-    Scaffold(
-        bottomBar = {
-            MyNavigationBar(
-                selectedKey = currentTab,
-                onSelectKey = { key ->
-                    currentTab = key
+    NavDisplay(
+        backStack = activeBackStack,
+        entryDecorators = listOf(
+            rememberSaveableStateHolderNavEntryDecorator(),
+            rememberViewModelStoreNavEntryDecorator()
+        ),
+        entryProvider = { key ->
+            when (key) {
+                is Route.Home -> {
+                    NavEntry(key = key) {
+                        HomeScreen(
+                            selectedKey = currentTab,
+                            onSelectedKey = { key ->
+                                currentTab = key
+                            },
+                        )
+                    }
                 }
-            )
-        }
-    ) { innerPadding ->
-        NavDisplay(
-            modifier = Modifier.padding(innerPadding),
-            backStack = activeBackStack,
-            entryDecorators = listOf(
-                rememberSaveableStateHolderNavEntryDecorator(),
-                rememberViewModelStoreNavEntryDecorator()
-            ),
-            entryProvider = { key ->
-                when (key) {
-                    is Route.Home -> {
-                        NavEntry(key = key) {
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text("Home")
+
+                is Route.Profile -> {
+                    NavEntry(key = key) {
+                        ProfileScreen(
+                            selectedKey = currentTab,
+                            onSelectedKey = { key ->
+                                currentTab = key
+                            },
+                            onNavigateToUpdate = {
+                                profileBackStack.add(Route.UpdateProfile)
                             }
-                        }
+                        )
                     }
-
-                    is Route.Profile -> {
-                        NavEntry(key = key) {
-                            ProfileScreen(
-                                onNavigateToUpdate = {}
-                            )
-                        }
-                    }
-
-                    else -> throw RuntimeException("Invalid NavKey.")
                 }
+
+                is Route.UpdateProfile -> {
+                    NavEntry(key = key) {
+                        UpdateProfileScreen(
+                            onNavigateBack = {
+                                profileBackStack.remove(Route.UpdateProfile)
+                            }
+                        )
+                    }
+                }
+
+                else -> throw RuntimeException("Invalid NavKey.")
             }
-        )
-    }
+        }
+    )
+
 }

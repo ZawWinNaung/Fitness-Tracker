@@ -7,9 +7,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
-import com.zawwinnaung.fitnesstracker.domain.model.User
-import com.zawwinnaung.fitnesstracker.screen.login.LoginScreen
-import com.zawwinnaung.fitnesstracker.screen.register.RegisterScreen
+import com.zawwinnaung.fitnesstracker.ui.screen.login.LoginScreen
+import com.zawwinnaung.fitnesstracker.ui.screen.register.RegisterScreen
 
 @Composable
 fun AuthNavigation() {
