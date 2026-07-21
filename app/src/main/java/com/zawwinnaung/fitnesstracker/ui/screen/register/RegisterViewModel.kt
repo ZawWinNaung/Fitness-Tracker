@@ -1,5 +1,6 @@
-package com.zawwinnaung.fitnesstracker.screen.register
+package com.zawwinnaung.fitnesstracker.ui.screen.register
 
+import android.util.Patterns
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -45,7 +46,7 @@ class RegisterViewModel @Inject constructor(
         passwordError = null
 
         if (userName.isBlank()) userNameError = "Username is required"
-        if (email.isBlank() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email)
+        if (email.isBlank() || !Patterns.EMAIL_ADDRESS.matcher(email)
                 .matches()
         ) emailError = "Invalid email"
         if (password.length < 6) passwordError = "Min 6 characters"

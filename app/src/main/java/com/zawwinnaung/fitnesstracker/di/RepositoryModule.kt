@@ -1,7 +1,7 @@
 package com.zawwinnaung.fitnesstracker.di
 
-import com.zawwinnaung.fitnesstracker.data.repository.AuthRepository
-import com.zawwinnaung.fitnesstracker.data.repository.AuthRepositoryImpl
+import com.zawwinnaung.fitnesstracker.data.repository.ApiRepository
+import com.zawwinnaung.fitnesstracker.data.repository.ApiRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -13,7 +13,7 @@ import javax.inject.Singleton
 abstract class RepositoryModule {
     @Binds
     @Singleton
-    abstract fun bindAuthRepository(
-        authRepositoryImpl: AuthRepositoryImpl
-    ): AuthRepository
+    abstract fun bindApiRepository(
+        apiRepositoryImpl: ApiRepositoryImpl
+    ): ApiRepository
 }

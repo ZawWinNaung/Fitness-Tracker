@@ -1,5 +1,6 @@
-package com.zawwinnaung.fitnesstracker.screen.login
+package com.zawwinnaung.fitnesstracker.ui.screen.login
 
+import android.util.Patterns
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -22,7 +23,7 @@ class LoginViewModel @Inject constructor(
         private set
 
     fun login(email: String, password: String, onResult: (String) -> Unit) {
-        if (email.isBlank() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+        if (email.isBlank() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             errorMessage = "Invalid email format"
             return
         }

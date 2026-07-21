@@ -8,5 +8,11 @@ data class User(
     val gender: String
 ) {
     val dobDisplay: String get() = dateOfBirth.ifBlank { "Not set" }
-    val genderDisplay: String get() = gender.ifBlank { "Not set" }
+    val genderDisplay: String
+        get() = when (gender) {
+            "M" -> "Male"
+            "F" -> "Female"
+            "O" -> "Other"
+            else -> "Not set"
+        }
 }

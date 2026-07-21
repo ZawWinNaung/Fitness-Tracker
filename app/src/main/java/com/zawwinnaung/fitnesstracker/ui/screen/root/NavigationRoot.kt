@@ -1,11 +1,8 @@
-package com.zawwinnaung.fitnesstracker.screen.root
+package com.zawwinnaung.fitnesstracker.ui.screen.root
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.zawwinnaung.fitnesstracker.navigation.AuthNavigation
 import com.zawwinnaung.fitnesstracker.navigation.MainNavigation
@@ -23,7 +20,7 @@ fun NavigationRoot(
         if (!isLoggedIn) {
             AuthNavigation()
         } else {
-            MainNavigation(onLogout = { viewModel.logout() })
+            MainNavigation()
         }
     }
 

@@ -1,4 +1,4 @@
-package com.zawwinnaung.fitnesstracker.screen.profile
+package com.zawwinnaung.fitnesstracker.ui.screen.profile
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -17,11 +17,15 @@ class ProfileViewModel @Inject constructor(
     private val themePreferences: ThemePreferences
 ) : ViewModel() {
 
-    private val _user = MutableStateFlow(sessionManager.getUser())
-    val user: StateFlow<User> = _user.asStateFlow()
+    private val _user = MutableStateFlow<User?>(null)
+    val user: StateFlow<User?> = _user.asStateFlow()
 
     private val _isDarkTheme = MutableStateFlow(themePreferences.isDarkMode())
     val isDarkTheme: StateFlow<Boolean> = _isDarkTheme.asStateFlow()
+
+    fun getUser() {
+        _user.value = sessionManager.getUser()
+    }
 
     fun logout() {
         sessionManager.clearSession()
