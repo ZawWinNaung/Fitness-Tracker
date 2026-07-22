@@ -1,17 +1,13 @@
 package com.zawwinnaung.fitnesstracker.navigation
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavEntry
@@ -39,52 +35,57 @@ fun MainNavigation() {
         is Route.Profile -> profileBackStack
         else -> homeBackStack
     }
-    NavDisplay(
-        backStack = activeBackStack,
-        entryDecorators = listOf(
-            rememberSaveableStateHolderNavEntryDecorator(),
-            rememberViewModelStoreNavEntryDecorator()
-        ),
-        entryProvider = { key ->
-            when (key) {
-                is Route.Home -> {
-                    NavEntry(key = key) {
-                        HomeScreen(
-                            selectedKey = currentTab,
-                            onSelectedKey = { key ->
-                                currentTab = key
-                            },
-                        )
-                    }
-                }
 
-                is Route.Profile -> {
-                    NavEntry(key = key) {
-                        ProfileScreen(
-                            selectedKey = currentTab,
-                            onSelectedKey = { key ->
-                                currentTab = key
-                            },
-                            onNavigateToUpdate = {
-                                profileBackStack.add(Route.UpdateProfile)
-                            }
-                        )
-                    }
+    Scaffold(
+        bottomBar = {
+            MyNavigationBar(
+                selectedKey = currentTab,
+                onSelectKey = { key ->
+                    currentTab = key
                 }
-
-                is Route.UpdateProfile -> {
-                    NavEntry(key = key) {
-                        UpdateProfileScreen(
-                            onNavigateBack = {
-                                profileBackStack.remove(Route.UpdateProfile)
-                            }
-                        )
-                    }
-                }
-
-                else -> throw RuntimeException("Invalid NavKey.")
-            }
+            )
         }
-    )
+    ) { paddingValues ->
+        NavDisplay(
+            modifier = Modifier.padding(paddingValues = paddingValues),
+            backStack = activeBackStack,
+            entryDecorators = listOf(
+                rememberSaveableStateHolderNavEntryDecorator(),
+                rememberViewModelStoreNavEntryDecorator()
+            ),
+            entryProvider = { key ->
+                when (key) {
+                    is Route.Home -> {
+                        NavEntry(key = key) {
+                            HomeScreen()
+                        }
+                    }
+
+                    is Route.Profile -> {
+                        NavEntry(key = key) {
+                            ProfileScreen(
+                                onNavigateToUpdate = {
+                                    profileBackStack.add(Route.UpdateProfile)
+                                }
+                            )
+                        }
+                    }
+
+                    is Route.UpdateProfile -> {
+                        NavEntry(key = key) {
+                            UpdateProfileScreen(
+                                onNavigateBack = {
+                                    profileBackStack.remove(Route.UpdateProfile)
+                                }
+                            )
+                        }
+                    }
+
+                    else -> throw RuntimeException("Invalid NavKey.")
+                }
+            }
+        )
+    }
+
 
 }

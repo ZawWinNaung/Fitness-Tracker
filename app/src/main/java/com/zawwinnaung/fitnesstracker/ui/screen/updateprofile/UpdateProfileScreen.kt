@@ -58,82 +58,77 @@ fun UpdateProfileScreen(
     var showDatePicker by remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState()
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Update Profile") },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                    }
-                }
-            )
-        }
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            OutlinedTextField(
-                value = uiState.dob,
-                onValueChange = {},
-                readOnly = true,
-                label = { Text("Date of Birth") },
-                placeholder = { Text("Select Date") },
-                trailingIcon = {
-                    IconButton(onClick = { showDatePicker = true }) {
-                        Icon(Icons.Default.DateRange, contentDescription = "Select DOB")
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { showDatePicker = true }
-            )
-
-            Text("Gender", style = MaterialTheme.typography.titleMedium)
-
-            val genderOptions = listOf("Male", "Female", "Other")
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                genderOptions.forEach { gender ->
-                    FilterChip(
-                        selected = uiState.sex.equals(gender, ignoreCase = true),
-                        onClick = { viewModel.onSexChanged(gender) },
-                        label = { Text(gender) },
-                        modifier = Modifier.weight(1f)
-                    )
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        TopAppBar(
+            title = { Text("Update Profile") },
+            navigationIcon = {
+                IconButton(onClick = onNavigateBack) {
+                    Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                 }
             }
+        )
+        OutlinedTextField(
+            value = uiState.dob,
+            onValueChange = {},
+            readOnly = true,
+            label = { Text("Date of Birth") },
+            placeholder = { Text("Select Date") },
+            trailingIcon = {
+                IconButton(onClick = { showDatePicker = true }) {
+                    Icon(Icons.Default.DateRange, contentDescription = "Select DOB")
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp)
+                .clickable { showDatePicker = true }
+        )
 
-            if (uiState.errorMessage != null) {
-                Text(
-                    text = uiState.errorMessage!!,
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall
+        Text("Gender", style = MaterialTheme.typography.titleMedium)
+
+        val genderOptions = listOf("Male", "Female", "Other")
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            genderOptions.forEach { gender ->
+                FilterChip(
+                    selected = uiState.sex.equals(gender, ignoreCase = true),
+                    onClick = { viewModel.onSexChanged(gender) },
+                    label = { Text(gender) },
+                    modifier = Modifier.weight(1f)
                 )
             }
+        }
 
-            if (uiState.isSuccess) {
-                Toast.makeText(context, uiState.successMessage, Toast.LENGTH_LONG).show()
-            }
+        if (uiState.errorMessage != null) {
+            Text(
+                text = uiState.errorMessage!!,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
 
-            Spacer(modifier = Modifier.height(16.dp))
+        if (uiState.isSuccess) {
+            Toast.makeText(context, uiState.successMessage, Toast.LENGTH_LONG).show()
+        }
 
-            Button(
-                onClick = { viewModel.updateProfile() },
-                modifier = Modifier.fillMaxWidth(),
-                enabled = !uiState.isLoading && uiState.isChanged
-            ) {
-                if (uiState.isLoading) {
-                    LoadingProgress()
-                } else {
-                    Text("Save Changes")
-                }
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = { viewModel.updateProfile() },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = !uiState.isLoading && uiState.isChanged
+        ) {
+            if (uiState.isLoading) {
+                LoadingProgress()
+            } else {
+                Text("Save Changes")
             }
         }
     }
