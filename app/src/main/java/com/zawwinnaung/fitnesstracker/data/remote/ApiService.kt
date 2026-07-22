@@ -4,7 +4,9 @@ import com.zawwinnaung.fitnesstracker.data.dto.BaseResponse
 import com.zawwinnaung.fitnesstracker.data.dto.UserDto
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
+import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface ApiService {
     @FormUrlEncoded
@@ -28,5 +30,11 @@ interface ApiService {
         @Field("user_id") userId: Int,
         @Field("dob") dob: String,
         @Field("sex") sex: String
+    ): BaseResponse<UserDto>
+
+    @FormUrlEncoded
+    @GET("get_user.php")
+    suspend fun getUser(
+        @Query("user_id") userId: Int,
     ): BaseResponse<UserDto>
 }

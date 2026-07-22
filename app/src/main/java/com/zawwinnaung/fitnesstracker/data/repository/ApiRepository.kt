@@ -10,4 +10,6 @@ interface ApiRepository {
     suspend fun register(request: RegisterRequest): NetworkResult<Unit>
 
     suspend fun updateProfile(userId: Int, dob: String, sex: String): NetworkResult<User>
+
+    suspend fun getUser(userId: Int): NetworkResult<User>
 }
