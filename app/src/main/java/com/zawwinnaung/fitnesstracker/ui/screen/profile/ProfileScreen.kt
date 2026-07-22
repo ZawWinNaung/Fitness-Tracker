@@ -1,5 +1,6 @@
 package com.zawwinnaung.fitnesstracker.ui.screen.profile
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -29,6 +30,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation3.runtime.NavKey
@@ -43,7 +45,8 @@ fun ProfileScreen(
     onNavigateToUpdate: () -> Unit,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
-    val user by viewModel.user.collectAsState()
+    val context = LocalContext.current
+    val uiState by viewModel.uiState.collectAsState()
     val scrollState = rememberScrollState()
     val isDarkTheme by viewModel.isDarkTheme.collectAsState()
 
@@ -71,7 +74,12 @@ fun ProfileScreen(
             Text("Profile", style = MaterialTheme.typography.headlineMedium)
             Spacer(modifier = Modifier.height(16.dp))
 
-            ProfileCard(user)
+            if (uiState.isLoading) {
+                ProfileCardSkeleton()
+            } else {
+                ProfileCard(uiState.user)
+
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -124,7 +132,8 @@ fun ProfileScreen(
                 Text("Logout")
             }
         }
+        if (uiState.errorMessage != null) {
+            Toast.makeText(context, uiState.errorMessage, Toast.LENGTH_LONG).show()
+        }
     }
-
-
 }

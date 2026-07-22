@@ -59,4 +59,20 @@ class ApiRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override suspend fun getUser(userId: Int): NetworkResult<User> {
+        return safeApiCall {
+            api.getUser(userId)
+        }.let { result ->
+            when (result) {
+                is NetworkResult.Success -> {
+                    NetworkResult.Success(result.data.toDomain(), result.message)
+                }
+
+                is NetworkResult.Error -> {
+                    NetworkResult.Error(result.message)
+                }
+            }
+        }
+    }
 }

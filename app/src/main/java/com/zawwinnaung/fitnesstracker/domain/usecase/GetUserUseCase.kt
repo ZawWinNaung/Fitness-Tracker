@@ -6,15 +6,19 @@ import com.zawwinnaung.fitnesstracker.domain.result.NetworkResult
 import com.zawwinnaung.fitnesstracker.util.UserSessionManager
 import javax.inject.Inject
 
-class UpdateProfileUseCase @Inject constructor(
+class GetUserUseCase @Inject constructor(
     private val repository: ApiRepository,
     private val userSessionManager: UserSessionManager
 ) {
-    suspend operator fun invoke(dob: String, sex: String): NetworkResult<User> {
-        val result = repository.updateProfile(userSessionManager.getUserId(), dob, sex)
+    suspend operator fun invoke(userId: Int): NetworkResult<User> {
+        val result = repository.getUser(userId)
 
         if (result is NetworkResult.Success) {
-            userSessionManager.saveUser(result.data)
+            val fetchedUser = result.data
+            val currentUser = userSessionManager.getUser()
+            if (fetchedUser != currentUser) {
+                userSessionManager.saveUser(fetchedUser)
+            }
         }
 
         return result

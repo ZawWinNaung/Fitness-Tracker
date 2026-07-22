@@ -58,6 +58,10 @@ class UserSessionManager(context: Context) {
         )
     }
 
+    fun getUserId(): Int {
+        return prefs.getInt(KEY_USER_ID, 0)
+    }
+
     fun clearSession() {
         prefs.edit().apply {
             putBoolean(KEY_IS_LOGGED_IN, false)
