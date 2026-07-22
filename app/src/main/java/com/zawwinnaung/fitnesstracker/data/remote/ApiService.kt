@@ -32,7 +32,6 @@ interface ApiService {
         @Field("sex") sex: String
     ): BaseResponse<UserDto>
 
-    @FormUrlEncoded
     @GET("get_user.php")
     suspend fun getUser(
         @Query("user_id") userId: Int,

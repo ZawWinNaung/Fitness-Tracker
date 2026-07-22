@@ -74,7 +74,12 @@ fun ProfileScreen(
             Text("Profile", style = MaterialTheme.typography.headlineMedium)
             Spacer(modifier = Modifier.height(16.dp))
 
-            ProfileCard(uiState.user)
+            if (uiState.isLoading) {
+                ProfileCardSkeleton()
+            } else {
+                ProfileCard(uiState.user)
+
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -131,6 +136,4 @@ fun ProfileScreen(
             Toast.makeText(context, uiState.errorMessage, Toast.LENGTH_LONG).show()
         }
     }
-
-
 }
