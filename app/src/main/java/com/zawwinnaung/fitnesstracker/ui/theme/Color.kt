@@ -2,12 +2,11 @@ package com.zawwinnaung.fitnesstracker.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val PrimaryIndigo = Color(0xFF3F51B5)
-val PrimaryIndigoDark = Color(0xFF303F9F)
-
+val PrimaryLight = Color(0xFFA1C8E0)
+val PrimaryDark = Color(0xFF4C4A45)
 val SecondaryEmerald = Color(0xFF009688)
 
-val NeutralWhite = Color(0xFFFAFAFA)
-val NeutralSurface = Color(0xFFFFFFFF)
+val BackgroundLight = Color(0xFF4FA3D1)
+val BackgroundDark = Color(0xFF1F262A)
 val NeutralDark = Color(0xFF121212)
-val NeutralSurfaceDark = Color(0xFF1E1E1E)
+val NeutralLight = Color(0xFFFFFFFF)

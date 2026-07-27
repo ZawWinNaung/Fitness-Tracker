@@ -9,12 +9,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import com.zawwinnaung.fitnesstracker.ui.components.CustomNavigationBar
 import com.zawwinnaung.fitnesstracker.ui.screen.home.HomeScreen
 import com.zawwinnaung.fitnesstracker.ui.screen.profile.ProfileScreen
 import com.zawwinnaung.fitnesstracker.ui.screen.updateprofile.UpdateProfileScreen
@@ -36,9 +38,11 @@ fun MainNavigation() {
         else -> homeBackStack
     }
 
+
     Scaffold(
+        containerColor = Color.Transparent,
         bottomBar = {
-            MyNavigationBar(
+            CustomNavigationBar(
                 selectedKey = currentTab,
                 onSelectKey = { key ->
                     currentTab = key
@@ -86,6 +90,4 @@ fun MainNavigation() {
             }
         )
     }
-
-
 }

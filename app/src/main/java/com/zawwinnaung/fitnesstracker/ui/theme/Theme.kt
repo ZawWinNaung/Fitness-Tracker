@@ -1,6 +1,5 @@
 package com.zawwinnaung.fitnesstracker.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -12,30 +11,31 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
-private val DarkColorScheme = darkColorScheme(
-    primary = PrimaryIndigo,
+private val LightColorScheme = lightColorScheme(
+    primary = PrimaryLight,
     secondary = SecondaryEmerald,
-    background = NeutralDark,
-    surface = NeutralSurfaceDark,
+    background = BackgroundLight,
+    surface = NeutralLight,
     onPrimary = Color.White,
-    onSurface = Color.White
+    onSurface = NeutralDark,
+    surfaceVariant = Color.White
 )
 
-private val LightColorScheme = lightColorScheme(
-    primary = PrimaryIndigo,
+private val DarkColorScheme = darkColorScheme(
+    primary = PrimaryDark,
     secondary = SecondaryEmerald,
-    background = NeutralWhite,
+    background = BackgroundDark,
     surface = NeutralDark,
-    surfaceVariant = Color(0xFF1E1E1E),
-    onPrimary = Color.White,
-    onSurface = Color.Black
+    onPrimary = Color.DarkGray,
+    onSurface = NeutralLight,
+    surfaceVariant = Color.LightGray
 )
 
 @Composable
 fun FitnessTrackerTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

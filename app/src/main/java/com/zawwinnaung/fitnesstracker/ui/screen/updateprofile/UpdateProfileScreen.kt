@@ -11,9 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,10 +20,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -38,6 +34,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.zawwinnaung.fitnesstracker.ui.components.CustomButton
+import com.zawwinnaung.fitnesstracker.ui.components.CustomTopAppBar
 import com.zawwinnaung.fitnesstracker.ui.components.LoadingProgress
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -64,13 +62,9 @@ fun UpdateProfileScreen(
             .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        TopAppBar(
-            title = { Text("Update Profile") },
-            navigationIcon = {
-                IconButton(onClick = onNavigateBack) {
-                    Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                }
-            }
+        CustomTopAppBar(
+            title = "Update Profile",
+            onBackClick = { onNavigateBack() }
         )
         OutlinedTextField(
             value = uiState.dob,
@@ -120,9 +114,11 @@ fun UpdateProfileScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(
+        CustomButton(
             onClick = { viewModel.updateProfile() },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
             enabled = !uiState.isLoading && uiState.isChanged
         ) {
             if (uiState.isLoading) {

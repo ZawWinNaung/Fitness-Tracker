@@ -28,6 +28,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.zawwinnaung.fitnesstracker.ui.components.CustomButton
 import com.zawwinnaung.fitnesstracker.ui.components.LoadingProgress
 
 @Composable
@@ -55,7 +56,7 @@ fun LoginScreen(
         Text(
             text = "Track your fitness journey",
             style = MaterialTheme.typography.bodyMedium,
-            color = Color.Gray
+            color = Color.White
         )
 
         Spacer(modifier = Modifier.height(48.dp))
@@ -98,7 +99,7 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        Button(
+        CustomButton(
             onClick = {
                 viewModel.login(email, password, onResult = { message ->
                     Toast.makeText(context, message, Toast.LENGTH_LONG).show()
@@ -107,7 +108,6 @@ fun LoginScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
-            shape = RoundedCornerShape(12.dp),
             enabled = !viewModel.isLoading
         ) {
             if (viewModel.isLoading) {
@@ -120,7 +120,7 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         TextButton(onClick = onNavigateToRegister) {
-            Text("Don't have an account? Sign Up")
+            Text("Don't have an account? Sign Up", color = Color.White)
         }
     }
 }

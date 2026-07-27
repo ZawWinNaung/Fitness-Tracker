@@ -14,14 +14,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -32,9 +30,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.navigation3.runtime.NavKey
 import com.zawwinnaung.fitnesstracker.BuildConfig
 import com.zawwinnaung.fitnesstracker.ui.components.AppCard
+import com.zawwinnaung.fitnesstracker.ui.components.CustomButton
+import com.zawwinnaung.fitnesstracker.ui.components.CustomDivider
 
 @Composable
 fun ProfileScreen(
@@ -50,15 +49,13 @@ fun ProfileScreen(
         viewModel.getUser()
     }
 
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
             .verticalScroll(scrollState)
     ) {
-        Text("Profile", style = MaterialTheme.typography.headlineMedium)
-        Spacer(modifier = Modifier.height(16.dp))
-
         if (uiState.isLoading) {
             ProfileCardSkeleton()
         } else {
@@ -73,33 +70,70 @@ fun ProfileScreen(
         ) {
             Column {
                 ListItem(
-                    headlineContent = { Text("Update Profile") },
-                    leadingContent = { Icon(Icons.Outlined.Edit, contentDescription = null) },
+                    headlineContent = {
+                        Text(
+                            "Update Profile",
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    },
+                    leadingContent = {
+                        Icon(
+                            Icons.Outlined.Edit,
+                            tint = MaterialTheme.colorScheme.onSurface,
+                            contentDescription = null
+                        )
+                    },
                     modifier = Modifier.clickable { onNavigateToUpdate() },
                     colors = ListItemDefaults.colors(Color.Transparent)
                 )
-                HorizontalDivider()
+                CustomDivider(modifier = Modifier.padding(horizontal = 20.dp))
                 ListItem(
-                    headlineContent = { Text("Dark Mode") },
+                    headlineContent = {
+                        Text(
+                            "Dark Mode",
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    },
                     leadingContent = {
                         Icon(
                             Icons.Outlined.DarkMode,
+                            tint = MaterialTheme.colorScheme.onSurface,
                             contentDescription = null
                         )
                     },
                     colors = ListItemDefaults.colors(Color.Transparent),
                     trailingContent = {
                         Switch(
+                            colors = SwitchDefaults.colors(
+                                checkedTrackColor = MaterialTheme.colorScheme.onSurface,
+                                uncheckedTrackColor = MaterialTheme.colorScheme.onSurface
+                            ),
                             checked = isDarkTheme,
                             onCheckedChange = { viewModel.toggleTheme(it) }
                         )
                     }
                 )
-                HorizontalDivider()
+                CustomDivider(modifier = Modifier.padding(horizontal = 20.dp))
                 ListItem(
-                    headlineContent = { Text("App Version") },
-                    trailingContent = { Text(BuildConfig.VERSION_NAME, color = Color.Gray) },
-                    leadingContent = { Icon(Icons.Outlined.Info, contentDescription = null) },
+                    headlineContent = {
+                        Text(
+                            "App Version",
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    },
+                    trailingContent = {
+                        Text(
+                            BuildConfig.VERSION_NAME,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    },
+                    leadingContent = {
+                        Icon(
+                            Icons.Outlined.Info,
+                            tint = MaterialTheme.colorScheme.onSurface,
+                            contentDescription = null
+                        )
+                    },
                     colors = ListItemDefaults.colors(Color.Transparent)
                 )
             }
@@ -107,18 +141,16 @@ fun ProfileScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Button(
+        CustomButton(
             onClick = { viewModel.logout() },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 16.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                .height(50.dp),
         ) {
-            Text("Logout")
+            Text("Logout", color = MaterialTheme.colorScheme.onSurface)
         }
     }
     if (uiState.errorMessage != null) {
         Toast.makeText(context, uiState.errorMessage, Toast.LENGTH_LONG).show()
     }
-
 }

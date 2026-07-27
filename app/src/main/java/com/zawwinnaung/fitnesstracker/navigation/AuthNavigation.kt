@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
@@ -14,7 +15,9 @@ import com.zawwinnaung.fitnesstracker.ui.screen.register.RegisterScreen
 fun AuthNavigation() {
     val authBackStack = rememberNavBackStack(Route.Login)
 
-    Scaffold() { innerPadding ->
+    Scaffold(
+        containerColor = Color.Transparent,
+    ) { innerPadding ->
         NavDisplay(
             modifier = Modifier.padding(innerPadding),
             backStack = authBackStack,

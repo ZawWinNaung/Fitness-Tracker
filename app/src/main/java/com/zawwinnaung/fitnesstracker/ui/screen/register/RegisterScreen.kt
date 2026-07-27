@@ -28,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.zawwinnaung.fitnesstracker.ui.components.CustomButton
 import com.zawwinnaung.fitnesstracker.ui.components.LoadingProgress
 
 @Composable
@@ -117,7 +118,7 @@ fun RegisterScreen(
         )
         Spacer(modifier = Modifier.height(32.dp))
 
-        Button(
+        CustomButton(
             onClick = {
                 viewModel.register(userName, email, password) { isSuccess, message ->
                     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
@@ -127,7 +128,6 @@ fun RegisterScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
-            shape = RoundedCornerShape(12.dp),
             enabled = !viewModel.isLoading
         ) {
             if (viewModel.isLoading) {
