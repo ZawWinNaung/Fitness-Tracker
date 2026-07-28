@@ -35,6 +35,9 @@ class ProfileViewModel @Inject constructor(
     private val _isDarkTheme = MutableStateFlow(themePreferences.isDarkMode())
     val isDarkTheme: StateFlow<Boolean> = _isDarkTheme.asStateFlow()
 
+    private val _isDynamicColor = MutableStateFlow(themePreferences.isDynamicColor())
+    val isDynamicColor: StateFlow<Boolean> = _isDynamicColor.asStateFlow()
+
     fun getUser() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
@@ -69,5 +72,10 @@ class ProfileViewModel @Inject constructor(
     fun toggleTheme(isDark: Boolean) {
         themePreferences.setDarkTheme(isDark)
         _isDarkTheme.value = isDark
+    }
+
+    fun toggleDynamicColor(action: Boolean) {
+        themePreferences.useDynamicColor(action)
+        _isDynamicColor.value = action
     }
 }

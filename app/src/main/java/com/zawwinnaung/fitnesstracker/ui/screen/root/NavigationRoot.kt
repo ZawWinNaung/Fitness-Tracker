@@ -15,8 +15,9 @@ fun NavigationRoot(
 
     val isLoggedIn by viewModel.isLoggedIn.collectAsState()
     val isDarkTheme by viewModel.isDarkTheme.collectAsState()
+    val isDynamicColor by viewModel.isDynamicColor.collectAsState()
 
-    FitnessTrackerTheme(isDarkTheme) {
+    FitnessTrackerTheme(darkTheme = isDarkTheme, dynamicColor = isDynamicColor) {
         if (!isLoggedIn) {
             AuthNavigation()
         } else {

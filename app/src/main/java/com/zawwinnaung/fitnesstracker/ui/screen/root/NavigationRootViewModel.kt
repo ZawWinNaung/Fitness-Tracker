@@ -30,4 +30,11 @@ class NavigationRootViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = themePreferences.isDarkMode()
         )
+
+    val isDynamicColor: StateFlow<Boolean> = themePreferences.isDynamicColorFlow
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = themePreferences.isDynamicColor()
+        )
 }

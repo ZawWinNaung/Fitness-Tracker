@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ColorLens
 import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Info
@@ -35,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation3.runtime.NavKey
 import com.zawwinnaung.fitnesstracker.BuildConfig
-import com.zawwinnaung.fitnesstracker.navigation.MyNavigationBar
+import com.zawwinnaung.fitnesstracker.ui.components.MyNavigationBar
 import com.zawwinnaung.fitnesstracker.ui.components.AppCard
 
 @Composable
@@ -49,6 +50,7 @@ fun ProfileScreen(
     val uiState by viewModel.uiState.collectAsState()
     val scrollState = rememberScrollState()
     val isDarkTheme by viewModel.isDarkTheme.collectAsState()
+    val isDynamicColor by viewModel.isDynamicColor.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.getUser()
@@ -93,7 +95,9 @@ fun ProfileScreen(
                         modifier = Modifier.clickable { onNavigateToUpdate() },
                         colors = ListItemDefaults.colors(Color.Transparent)
                     )
-                    HorizontalDivider()
+
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+
                     ListItem(
                         headlineContent = { Text("Dark Mode") },
                         leadingContent = {
@@ -106,11 +110,34 @@ fun ProfileScreen(
                         trailingContent = {
                             Switch(
                                 checked = isDarkTheme,
-                                onCheckedChange = { viewModel.toggleTheme(it) }
+                                onCheckedChange = {
+                                    viewModel.toggleTheme(it)
+                                }
                             )
                         }
                     )
-                    HorizontalDivider()
+
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+
+                    ListItem(
+                        headlineContent = { Text("Use Dynamic Colors") },
+                        leadingContent = {
+                            Icon(
+                                Icons.Outlined.ColorLens,
+                                contentDescription = null
+                            )
+                        },
+                        colors = ListItemDefaults.colors(Color.Transparent),
+                        trailingContent = {
+                            Switch(
+                                checked = isDynamicColor,
+                                onCheckedChange = { viewModel.toggleDynamicColor(it) }
+                            )
+                        }
+                    )
+
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+
                     ListItem(
                         headlineContent = { Text("App Version") },
                         trailingContent = { Text(BuildConfig.VERSION_NAME, color = Color.Gray) },
@@ -127,7 +154,7 @@ fun ProfileScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
                 Text("Logout")
             }
