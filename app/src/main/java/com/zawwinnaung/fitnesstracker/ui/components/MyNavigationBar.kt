@@ -1,4 +1,4 @@
-package com.zawwinnaung.fitnesstracker.navigation
+package com.zawwinnaung.fitnesstracker.ui.components
 
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
@@ -6,6 +6,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation3.runtime.NavKey
+import com.zawwinnaung.fitnesstracker.navigation.TOP_LEVEL_DESTINATIONS
 
 @Composable
 fun MyNavigationBar(

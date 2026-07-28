@@ -39,6 +39,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.zawwinnaung.fitnesstracker.ui.components.LoadingProgress
+import com.zawwinnaung.fitnesstracker.ui.components.MyTopAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,12 +61,10 @@ fun UpdateProfileScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Update Profile") },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                    }
+            MyTopAppBar(
+                title = "Update Profile",
+                onNavigationIconClick = {
+                    onNavigateBack()
                 }
             )
         }
