@@ -17,9 +17,13 @@ import androidx.core.view.WindowCompat
 
 private val LightColorScheme = lightColorScheme(
     primary = PrimaryIndigo,
-    secondary = SecondaryEmerald,
-    background = NeutralWhite,
     onPrimary = Color.White,
+    secondary = SecondaryEmerald,
+    primaryContainer = PrimaryContainer,
+    onPrimaryContainer = PrimaryIndigo,
+    tertiaryContainer = TertiaryContainer,
+    onTertiaryContainer = OnTertiaryContainer,
+    background = NeutralWhite,
     surface = NeutralSurface,
     onSurface = Color.Black,
     surfaceVariant = SurfaceVariantLight,
@@ -28,9 +32,13 @@ private val LightColorScheme = lightColorScheme(
 
 private val DarkColorScheme = darkColorScheme(
     primary = PrimaryIndigoDark,
-    secondary = SecondaryEmerald,
-    background = NeutralDark,
     onPrimary = Color.White,
+    secondary = SecondaryEmerald,
+    primaryContainer = PrimaryContainerDark,
+    onPrimaryContainer = PrimaryIndigoDark,
+    tertiaryContainer = TertiaryContainer,
+    onTertiaryContainer = OnTertiaryContainer,
+    background = NeutralDark,
     surface = NeutralSurfaceDark,
     onSurface = Color.White,
     surfaceVariant = SurfaceVariantDark,
