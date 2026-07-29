@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -54,20 +55,14 @@ fun MyNavigationBar(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     TOP_LEVEL_DESTINATIONS.forEach { (topLevelDestination, data) ->
-                        NavigationBarItem(
+                        MyNavigationBarItem(
+                            modifier = Modifier,
                             selected = topLevelDestination == selectedKey,
                             onClick = {
                                 onSelectKey(topLevelDestination)
                             },
-                            icon = {
-                                Icon(
-                                    imageVector = data.icon,
-                                    contentDescription = data.title
-                                )
-                            },
-                            label = {
-                                Text(text = data.title)
-                            }
+                            icon = data.icon,
+                            title = data.title
                         )
                     }
                 }
