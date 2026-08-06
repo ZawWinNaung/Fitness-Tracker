@@ -19,6 +19,7 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import com.zawwinnaung.fitnesstracker.ui.components.MyNavigationBar
 import com.zawwinnaung.fitnesstracker.ui.screen.home.HomeScreen
 import com.zawwinnaung.fitnesstracker.ui.screen.profile.ProfileScreen
 import com.zawwinnaung.fitnesstracker.ui.screen.updateprofile.UpdateProfileScreen
@@ -39,52 +40,57 @@ fun MainNavigation() {
         is Route.Profile -> profileBackStack
         else -> homeBackStack
     }
-    NavDisplay(
-        backStack = activeBackStack,
-        entryDecorators = listOf(
-            rememberSaveableStateHolderNavEntryDecorator(),
-            rememberViewModelStoreNavEntryDecorator()
-        ),
-        entryProvider = { key ->
-            when (key) {
-                is Route.Home -> {
-                    NavEntry(key = key) {
-                        HomeScreen(
-                            selectedKey = currentTab,
-                            onSelectedKey = { key ->
-                                currentTab = key
-                            },
-                        )
+    Scaffold(
+        bottomBar = {
+            if (TOP_LEVEL_DESTINATIONS.contains(activeBackStack.last())) {
+                MyNavigationBar(
+                    selectedKey = currentTab,
+                    onSelectKey = { key ->
+                        currentTab = key
                     }
-                }
-
-                is Route.Profile -> {
-                    NavEntry(key = key) {
-                        ProfileScreen(
-                            selectedKey = currentTab,
-                            onSelectedKey = { key ->
-                                currentTab = key
-                            },
-                            onNavigateToUpdate = {
-                                profileBackStack.add(Route.UpdateProfile)
-                            }
-                        )
-                    }
-                }
-
-                is Route.UpdateProfile -> {
-                    NavEntry(key = key) {
-                        UpdateProfileScreen(
-                            onNavigateBack = {
-                                profileBackStack.remove(Route.UpdateProfile)
-                            }
-                        )
-                    }
-                }
-
-                else -> throw RuntimeException("Invalid NavKey.")
+                )
             }
         }
-    )
+    ) { paddingValues ->
+        NavDisplay(
+            modifier = Modifier.padding(paddingValues),
+            backStack = activeBackStack,
+            entryDecorators = listOf(
+                rememberSaveableStateHolderNavEntryDecorator(),
+                rememberViewModelStoreNavEntryDecorator()
+            ),
+            entryProvider = { key ->
+                when (key) {
+                    is Route.Home -> {
+                        NavEntry(key = key) {
+                            HomeScreen()
+                        }
+                    }
+
+                    is Route.Profile -> {
+                        NavEntry(key = key) {
+                            ProfileScreen(
+                                onNavigateToUpdate = {
+                                    profileBackStack.add(Route.UpdateProfile)
+                                }
+                            )
+                        }
+                    }
+
+                    is Route.UpdateProfile -> {
+                        NavEntry(key = key) {
+                            UpdateProfileScreen(
+                                onNavigateBack = {
+                                    profileBackStack.remove(Route.UpdateProfile)
+                                }
+                            )
+                        }
+                    }
+
+                    else -> throw RuntimeException("Invalid NavKey.")
+                }
+            }
+        )
+    }
 
 }
