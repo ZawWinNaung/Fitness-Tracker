@@ -1,7 +1,8 @@
 package com.zawwinnaung.fitnesstracker.domain.model
 
-import android.graphics.drawable.Drawable
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Activity(
     val id: Int,
     val title: String,

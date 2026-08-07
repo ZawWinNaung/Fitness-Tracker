@@ -22,6 +22,7 @@ import com.zawwinnaung.fitnesstracker.ui.components.MyNavigationBar
 import com.zawwinnaung.fitnesstracker.ui.screen.home.HomeScreen
 import com.zawwinnaung.fitnesstracker.ui.screen.map.MapScreen
 import com.zawwinnaung.fitnesstracker.ui.screen.profile.ProfileScreen
+import com.zawwinnaung.fitnesstracker.ui.screen.tracking.TrackingScreen
 import com.zawwinnaung.fitnesstracker.ui.screen.updateprofile.UpdateProfileScreen
 
 @Composable
@@ -59,7 +60,11 @@ fun MainNavigation() {
                     when (key) {
                         is Route.Home -> {
                             NavEntry(key = key) {
-                                HomeScreen()
+                                HomeScreen(
+                                    routeToTracking = { activity ->
+                                        activeBackStack.add(Route.Tracking(activity))
+                                    }
+                                )
                             }
                         }
 
@@ -67,7 +72,7 @@ fun MainNavigation() {
                             NavEntry(key = key) {
                                 ProfileScreen(
                                     onNavigateToUpdate = {
-                                        profileBackStack.add(Route.UpdateProfile)
+                                        activeBackStack.add(Route.UpdateProfile)
                                     }
                                 )
                             }
@@ -77,9 +82,19 @@ fun MainNavigation() {
                             NavEntry(key = key) {
                                 UpdateProfileScreen(
                                     onNavigateBack = {
-                                        profileBackStack.remove(Route.UpdateProfile)
+                                        activeBackStack.remove(Route.UpdateProfile)
                                     }
                                 )
+                            }
+                        }
+
+                        is Route.Tracking -> {
+                            NavEntry(key = key) {
+                                TrackingScreen(
+                                    activity = key.activity,
+                                    onNavigateBack = { activity ->
+                                        activeBackStack.remove(Route.Tracking(activity))
+                                    })
                             }
                         }
 
