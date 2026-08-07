@@ -62,6 +62,10 @@ class UserSessionManager(context: Context) {
         return prefs.getInt(KEY_USER_ID, 0)
     }
 
+    fun getUserName(): String {
+        return prefs.getString(KEY_USER_NAME, "") ?: ""
+    }
+
     fun clearSession() {
         prefs.edit().apply {
             putBoolean(KEY_IS_LOGGED_IN, false)

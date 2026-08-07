@@ -1,8 +1,10 @@
 package com.zawwinnaung.fitnesstracker.data.repository
 
+import android.util.Log
 import com.zawwinnaung.fitnesstracker.data.mapper.toDomain
 import com.zawwinnaung.fitnesstracker.data.remote.ApiService
 import com.zawwinnaung.fitnesstracker.data.repository.base.BaseRepository
+import com.zawwinnaung.fitnesstracker.domain.model.Activity
 import com.zawwinnaung.fitnesstracker.domain.model.RegisterRequest
 import com.zawwinnaung.fitnesstracker.domain.model.User
 import com.zawwinnaung.fitnesstracker.domain.result.NetworkResult
@@ -70,6 +72,25 @@ class ApiRepositoryImpl @Inject constructor(
                 }
 
                 is NetworkResult.Error -> {
+                    NetworkResult.Error(result.message)
+                }
+            }
+        }
+    }
+
+    override suspend fun getActivities(): NetworkResult<List<Activity>> {
+        return safeApiCall {
+            api.getActivities()
+        }.let { result ->
+            Log.d("#activity", "fetch activity")
+            when (result) {
+                is NetworkResult.Success -> {
+                    Log.d("#activity", result.data.toString())
+                    NetworkResult.Success(result.data.toDomain(), result.message)
+                }
+
+                is NetworkResult.Error -> {
+                    Log.d("#activity", result.message)
                     NetworkResult.Error(result.message)
                 }
             }

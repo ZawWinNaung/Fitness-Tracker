@@ -1,5 +1,6 @@
 package com.zawwinnaung.fitnesstracker.data.remote
 
+import com.zawwinnaung.fitnesstracker.data.dto.ActivityResponseDto
 import com.zawwinnaung.fitnesstracker.data.dto.BaseResponse
 import com.zawwinnaung.fitnesstracker.data.dto.UserDto
 import retrofit2.http.Field
@@ -36,4 +37,7 @@ interface ApiService {
     suspend fun getUser(
         @Query("user_id") userId: Int,
     ): BaseResponse<UserDto>
+
+    @GET("get_activities.php")
+    suspend fun getActivities(): BaseResponse<List<ActivityResponseDto>>
 }
