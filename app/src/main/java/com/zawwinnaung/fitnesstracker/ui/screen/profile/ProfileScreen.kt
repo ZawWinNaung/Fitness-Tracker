@@ -41,8 +41,6 @@ import com.zawwinnaung.fitnesstracker.ui.components.AppCard
 
 @Composable
 fun ProfileScreen(
-    selectedKey: NavKey,
-    onSelectedKey: (NavKey) -> Unit,
     onNavigateToUpdate: () -> Unit,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
@@ -55,112 +53,99 @@ fun ProfileScreen(
     LaunchedEffect(Unit) {
         viewModel.getUser()
     }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+            .verticalScroll(scrollState)
+    ) {
+        Text("Profile", style = MaterialTheme.typography.headlineMedium)
+        Spacer(modifier = Modifier.height(16.dp))
 
-    Scaffold(
-        bottomBar = {
-            MyNavigationBar(
-                selectedKey = selectedKey,
-                onSelectKey = { key ->
-                    onSelectedKey(key)
-                }
-            )
+        if (uiState.isLoading) {
+            ProfileCardSkeleton()
+        } else {
+            ProfileCard(uiState.user)
+
         }
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(16.dp)
-                .verticalScroll(scrollState)
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        AppCard(
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Profile", style = MaterialTheme.typography.headlineMedium)
-            Spacer(modifier = Modifier.height(16.dp))
+            Column {
+                ListItem(
+                    headlineContent = { Text("Update Profile") },
+                    leadingContent = { Icon(Icons.Outlined.Edit, contentDescription = null) },
+                    modifier = Modifier.clickable { onNavigateToUpdate() },
+                    colors = ListItemDefaults.colors(Color.Transparent)
+                )
 
-            if (uiState.isLoading) {
-                ProfileCardSkeleton()
-            } else {
-                ProfileCard(uiState.user)
+                HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
 
-            }
+                ListItem(
+                    headlineContent = { Text("Dark Mode") },
+                    leadingContent = {
+                        Icon(
+                            Icons.Outlined.DarkMode,
+                            contentDescription = null
+                        )
+                    },
+                    colors = ListItemDefaults.colors(Color.Transparent),
+                    trailingContent = {
+                        Switch(
+                            checked = isDarkTheme,
+                            onCheckedChange = {
+                                viewModel.toggleTheme(it)
+                            }
+                        )
+                    }
+                )
 
-            Spacer(modifier = Modifier.height(24.dp))
+                HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
 
-            AppCard(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column {
-                    ListItem(
-                        headlineContent = { Text("Update Profile") },
-                        leadingContent = { Icon(Icons.Outlined.Edit, contentDescription = null) },
-                        modifier = Modifier.clickable { onNavigateToUpdate() },
-                        colors = ListItemDefaults.colors(Color.Transparent)
-                    )
+                ListItem(
+                    headlineContent = { Text("Use Dynamic Colors") },
+                    leadingContent = {
+                        Icon(
+                            Icons.Outlined.ColorLens,
+                            contentDescription = null
+                        )
+                    },
+                    colors = ListItemDefaults.colors(Color.Transparent),
+                    trailingContent = {
+                        Switch(
+                            checked = isDynamicColor,
+                            onCheckedChange = { viewModel.toggleDynamicColor(it) }
+                        )
+                    }
+                )
 
-                    HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+                HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
 
-                    ListItem(
-                        headlineContent = { Text("Dark Mode") },
-                        leadingContent = {
-                            Icon(
-                                Icons.Outlined.DarkMode,
-                                contentDescription = null
-                            )
-                        },
-                        colors = ListItemDefaults.colors(Color.Transparent),
-                        trailingContent = {
-                            Switch(
-                                checked = isDarkTheme,
-                                onCheckedChange = {
-                                    viewModel.toggleTheme(it)
-                                }
-                            )
-                        }
-                    )
-
-                    HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
-
-                    ListItem(
-                        headlineContent = { Text("Use Dynamic Colors") },
-                        leadingContent = {
-                            Icon(
-                                Icons.Outlined.ColorLens,
-                                contentDescription = null
-                            )
-                        },
-                        colors = ListItemDefaults.colors(Color.Transparent),
-                        trailingContent = {
-                            Switch(
-                                checked = isDynamicColor,
-                                onCheckedChange = { viewModel.toggleDynamicColor(it) }
-                            )
-                        }
-                    )
-
-                    HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
-
-                    ListItem(
-                        headlineContent = { Text("App Version") },
-                        trailingContent = { Text(BuildConfig.VERSION_NAME, color = Color.Gray) },
-                        leadingContent = { Icon(Icons.Outlined.Info, contentDescription = null) },
-                        colors = ListItemDefaults.colors(Color.Transparent)
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Button(
-                onClick = { viewModel.logout() },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
-            ) {
-                Text("Logout")
+                ListItem(
+                    headlineContent = { Text("App Version") },
+                    trailingContent = { Text(BuildConfig.VERSION_NAME, color = Color.Gray) },
+                    leadingContent = { Icon(Icons.Outlined.Info, contentDescription = null) },
+                    colors = ListItemDefaults.colors(Color.Transparent)
+                )
             }
         }
-        if (uiState.errorMessage != null) {
-            Toast.makeText(context, uiState.errorMessage, Toast.LENGTH_LONG).show()
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Button(
+            onClick = { viewModel.logout() },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+        ) {
+            Text("Logout")
         }
+    }
+    if (uiState.errorMessage != null) {
+        Toast.makeText(context, uiState.errorMessage, Toast.LENGTH_LONG).show()
     }
 }

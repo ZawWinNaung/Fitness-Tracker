@@ -1,38 +1,43 @@
 package com.zawwinnaung.fitnesstracker.ui.screen.home
 
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.navigation3.runtime.NavKey
-import com.zawwinnaung.fitnesstracker.ui.components.MyNavigationBar
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
 
 @Composable
-fun HomeScreen(
-    selectedKey: NavKey,
-    onSelectedKey: (NavKey) -> Unit,
-) {
-    Scaffold(
-        bottomBar = {
-            MyNavigationBar(
-                selectedKey = selectedKey,
-                onSelectKey = { key ->
-                    onSelectedKey(key)
-                }
-            )
+fun HomeScreen() {
+    val context = LocalContext.current
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        // Save state that we already asked, so we don't ask again this session/launch
+    }
+
+    LaunchedEffect(Unit) {
+        val hasPermission = ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+        if (!hasPermission) {
+            // You can use a local flag or preference check here to ensure
+            // it only requests once per app launch cycle.
+            permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-            contentAlignment = Alignment.Center
-        ) {
-            Text("Home")
-        }
+    }
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text("Home")
     }
 }

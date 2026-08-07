@@ -35,6 +35,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -59,20 +60,18 @@ fun UpdateProfileScreen(
     var showDatePicker by remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState()
 
-    Scaffold(
-        topBar = {
-            MyTopAppBar(
-                title = "Update Profile",
-                onNavigationIconClick = {
-                    onNavigateBack()
-                }
-            )
-        }
-    ) { padding ->
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        MyTopAppBar(
+            title = "Update Profile",
+            onNavigationIconClick = {
+                onNavigateBack()
+            }
+        )
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
+                .fillMaxWidth()
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
@@ -135,28 +134,31 @@ fun UpdateProfileScreen(
                 }
             }
         }
-    }
 
-    if (showDatePicker) {
-        DatePickerDialog(
-            onDismissRequest = { showDatePicker = false },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        showDatePicker = false
-                        viewModel.onDateSelected(datePickerState.selectedDateMillis)
+
+        if (showDatePicker) {
+            DatePickerDialog(
+                onDismissRequest = { showDatePicker = false },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            showDatePicker = false
+                            viewModel.onDateSelected(datePickerState.selectedDateMillis)
+                        }
+                    ) {
+                        Text("OK")
                     }
-                ) {
-                    Text("OK")
+                },
+                dismissButton = {
+                    TextButton(onClick = { showDatePicker = false }) {
+                        Text("Cancel")
+                    }
                 }
-            },
-            dismissButton = {
-                TextButton(onClick = { showDatePicker = false }) {
-                    Text("Cancel")
-                }
+            ) {
+                DatePicker(state = datePickerState)
             }
-        ) {
-            DatePicker(state = datePickerState)
         }
     }
+
+
 }
