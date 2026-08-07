@@ -2,6 +2,8 @@ package com.zawwinnaung.fitnesstracker.di
 
 import com.zawwinnaung.fitnesstracker.data.repository.ApiRepository
 import com.zawwinnaung.fitnesstracker.data.repository.ApiRepositoryImpl
+import com.zawwinnaung.fitnesstracker.data.repository.DbRepository
+import com.zawwinnaung.fitnesstracker.data.repository.DbRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -16,4 +18,10 @@ abstract class RepositoryModule {
     abstract fun bindApiRepository(
         apiRepositoryImpl: ApiRepositoryImpl
     ): ApiRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindDbRepository(
+        dbRepositoryImpl: DbRepositoryImpl
+    ): DbRepository
 }

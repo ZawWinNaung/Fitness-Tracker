@@ -78,4 +78,8 @@ dependencies {
 
     // Android Maps Compose
     implementation(libs.maps.compose)
+
+    //Room
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
 }
