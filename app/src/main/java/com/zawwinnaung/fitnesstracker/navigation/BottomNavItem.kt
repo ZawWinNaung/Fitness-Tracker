@@ -16,10 +16,6 @@ val TOP_LEVEL_DESTINATIONS = mapOf(
         icon = Icons.Outlined.Home,
         title = "Home"
     ),
-    Route.Map to BottomNavItem(
-        icon = Icons.Outlined.NearMe,
-        title = "Nearby"
-    ),
     Route.Profile to BottomNavItem(
         icon = Icons.Outlined.Person,
         title = "Profile"
