@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,6 +20,7 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.zawwinnaung.fitnesstracker.ui.components.MyNavigationBar
 import com.zawwinnaung.fitnesstracker.ui.screen.home.HomeScreen
+import com.zawwinnaung.fitnesstracker.ui.screen.map.MapScreen
 import com.zawwinnaung.fitnesstracker.ui.screen.profile.ProfileScreen
 import com.zawwinnaung.fitnesstracker.ui.screen.updateprofile.UpdateProfileScreen
 
@@ -41,9 +41,62 @@ fun MainNavigation() {
         else -> homeBackStack
     }
     Scaffold(
-        bottomBar = {
+    ) { paddingValues ->
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
+            contentAlignment = Alignment.Center
+        ) {
+            NavDisplay(
+                backStack = activeBackStack,
+                entryDecorators = listOf(
+                    rememberSaveableStateHolderNavEntryDecorator(),
+                    rememberViewModelStoreNavEntryDecorator()
+                ),
+                entryProvider = { key ->
+                    when (key) {
+                        is Route.Home -> {
+                            NavEntry(key = key) {
+                                HomeScreen()
+                            }
+                        }
+
+                        is Route.Profile -> {
+                            NavEntry(key = key) {
+                                ProfileScreen(
+                                    onNavigateToUpdate = {
+                                        profileBackStack.add(Route.UpdateProfile)
+                                    }
+                                )
+                            }
+                        }
+
+                        is Route.UpdateProfile -> {
+                            NavEntry(key = key) {
+                                UpdateProfileScreen(
+                                    onNavigateBack = {
+                                        profileBackStack.remove(Route.UpdateProfile)
+                                    }
+                                )
+                            }
+                        }
+
+                        is Route.Map -> {
+                            NavEntry(key = key) {
+                                MapScreen()
+                            }
+                        }
+
+                        else -> throw RuntimeException("Invalid NavKey.")
+                    }
+                }
+            )
+
             if (TOP_LEVEL_DESTINATIONS.contains(activeBackStack.last())) {
                 MyNavigationBar(
+                    modifier = Modifier.align(Alignment.BottomCenter),
                     selectedKey = currentTab,
                     onSelectKey = { key ->
                         currentTab = key
@@ -51,46 +104,6 @@ fun MainNavigation() {
                 )
             }
         }
-    ) { paddingValues ->
-        NavDisplay(
-            modifier = Modifier.padding(paddingValues),
-            backStack = activeBackStack,
-            entryDecorators = listOf(
-                rememberSaveableStateHolderNavEntryDecorator(),
-                rememberViewModelStoreNavEntryDecorator()
-            ),
-            entryProvider = { key ->
-                when (key) {
-                    is Route.Home -> {
-                        NavEntry(key = key) {
-                            HomeScreen()
-                        }
-                    }
-
-                    is Route.Profile -> {
-                        NavEntry(key = key) {
-                            ProfileScreen(
-                                onNavigateToUpdate = {
-                                    profileBackStack.add(Route.UpdateProfile)
-                                }
-                            )
-                        }
-                    }
-
-                    is Route.UpdateProfile -> {
-                        NavEntry(key = key) {
-                            UpdateProfileScreen(
-                                onNavigateBack = {
-                                    profileBackStack.remove(Route.UpdateProfile)
-                                }
-                            )
-                        }
-                    }
-
-                    else -> throw RuntimeException("Invalid NavKey.")
-                }
-            }
-        )
     }
 
 }
