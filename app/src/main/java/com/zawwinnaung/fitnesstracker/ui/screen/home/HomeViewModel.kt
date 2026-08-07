@@ -39,7 +39,7 @@ class HomeViewModel @Inject constructor(
         _uiState.update { it.copy(userName = userSessionManager.getUserName()) }
     }
 
-    private fun loadActivities() {
+    fun loadActivities() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
             when (val result = getActivitiesUseCase()) {

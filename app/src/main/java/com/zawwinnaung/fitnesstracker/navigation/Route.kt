@@ -1,6 +1,7 @@
 package com.zawwinnaung.fitnesstracker.navigation
 
 import androidx.navigation3.runtime.NavKey
+import com.zawwinnaung.fitnesstracker.domain.model.Activity
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -23,4 +24,9 @@ sealed interface Route : NavKey {
 
     @Serializable
     data object Map : Route, NavKey
+
+    @Serializable
+    data class Tracking(
+        val activity: Activity
+    ) : Route, NavKey
 }
