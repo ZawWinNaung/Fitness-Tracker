@@ -23,6 +23,7 @@ import com.zawwinnaung.fitnesstracker.ui.screen.home.HomeScreen
 import com.zawwinnaung.fitnesstracker.ui.screen.map.MapScreen
 import com.zawwinnaung.fitnesstracker.ui.screen.profile.ProfileScreen
 import com.zawwinnaung.fitnesstracker.ui.screen.tracking.TrackingScreen
+import com.zawwinnaung.fitnesstracker.ui.screen.trackingsummary.TrackingSummaryScreen
 import com.zawwinnaung.fitnesstracker.ui.screen.updateprofile.UpdateProfileScreen
 
 @Composable
@@ -94,7 +95,21 @@ fun MainNavigation() {
                                     activity = key.activity,
                                     onNavigateBack = { activity ->
                                         activeBackStack.remove(Route.Tracking(activity))
+                                    },
+                                    onNavigateToSummary = { trackedActivity ->
+                                        activeBackStack.add(Route.TrackingSummary(trackedActivity))
                                     })
+                            }
+                        }
+
+                        is Route.TrackingSummary -> {
+                            NavEntry(key = key) {
+                                TrackingSummaryScreen(
+                                    trackedActivity = key.trackedActivity,
+                                    onNavigateBack = {
+                                        activeBackStack.remove(Route.TrackingSummary(key.trackedActivity))
+                                    }
+                                )
                             }
                         }
 

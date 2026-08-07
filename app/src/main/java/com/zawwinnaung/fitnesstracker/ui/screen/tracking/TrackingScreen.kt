@@ -1,5 +1,6 @@
 package com.zawwinnaung.fitnesstracker.ui.screen.tracking
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -8,51 +9,39 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.zawwinnaung.fitnesstracker.data.service.TrackerService
 import com.zawwinnaung.fitnesstracker.domain.model.Activity
+import com.zawwinnaung.fitnesstracker.domain.model.TrackedActivity
 import com.zawwinnaung.fitnesstracker.ui.components.AppCard
 import com.zawwinnaung.fitnesstracker.ui.components.MyTopAppBar
 import com.zawwinnaung.fitnesstracker.util.formatTime
-import kotlinx.coroutines.delay
-import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun TrackingScreen(
     activity: Activity,
     onNavigateBack: (Activity) -> Unit,
-    viewModel: TrackingViewModel = hiltViewModel()
+    onNavigateToSummary: (TrackedActivity) -> Unit,
 ) {
-    var isTracking by remember { mutableStateOf(false) }
-    var elapsedSeconds by remember { mutableLongStateOf(0L) }
-
-    LaunchedEffect(isTracking) {
-        if (isTracking) {
-            while (true) {
-                delay(1000L.milliseconds)
-                elapsedSeconds++
-            }
-        }
-    }
-
+    val context = LocalContext.current
+    val isTracking by TrackerService.trackingState.collectAsStateWithLifecycle()
+    val elapsedSeconds by TrackerService.elapsedTime.collectAsStateWithLifecycle()
+    val route by TrackerService.routePoints.collectAsStateWithLifecycle()
     Column(
         modifier = Modifier.fillMaxSize(),
     ) {
@@ -123,7 +112,11 @@ fun TrackingScreen(
                                 modifier = Modifier.weight(0.5f),
                                 enabled = !isTracking,
                                 onClick = {
-                                    isTracking = true
+                                    val startIntent =
+                                        Intent(context, TrackerService::class.java).apply {
+                                            action = TrackerService.ACTION_START
+                                        }
+                                    ContextCompat.startForegroundService(context, startIntent)
                                 }) {
                                 Text(
                                     text = "Start",
@@ -136,8 +129,17 @@ fun TrackingScreen(
                                 modifier = Modifier.weight(0.5f),
                                 enabled = isTracking,
                                 onClick = {
-                                    isTracking = false
-                                    elapsedSeconds = 0L
+                                    val stopIntent =
+                                        Intent(context, TrackerService::class.java).apply {
+                                            action = TrackerService.ACTION_STOP
+                                        }
+                                    context.startService(stopIntent)
+                                    val trackedActivity = TrackedActivity(
+                                        activity = activity,
+                                        time = elapsedSeconds,
+                                        routes = route
+                                    )
+                                    onNavigateToSummary(trackedActivity)
                                 }) {
                                 Text(
                                     text = "Stop",
