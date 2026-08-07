@@ -1,6 +1,5 @@
 package com.zawwinnaung.fitnesstracker.data.repository
 
-import android.util.Log
 import com.zawwinnaung.fitnesstracker.data.mapper.toDomain
 import com.zawwinnaung.fitnesstracker.data.remote.ApiService
 import com.zawwinnaung.fitnesstracker.data.repository.base.BaseRepository
@@ -82,15 +81,13 @@ class ApiRepositoryImpl @Inject constructor(
         return safeApiCall {
             api.getActivities()
         }.let { result ->
-            Log.d("#activity", "fetch activity")
             when (result) {
                 is NetworkResult.Success -> {
-                    Log.d("#activity", result.data.toString())
+
                     NetworkResult.Success(result.data.toDomain(), result.message)
                 }
 
                 is NetworkResult.Error -> {
-                    Log.d("#activity", result.message)
                     NetworkResult.Error(result.message)
                 }
             }
