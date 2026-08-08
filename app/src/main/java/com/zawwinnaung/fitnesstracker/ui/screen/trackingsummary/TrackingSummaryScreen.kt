@@ -1,5 +1,6 @@
 package com.zawwinnaung.fitnesstracker.ui.screen.trackingsummary
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,15 +19,16 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
@@ -35,8 +37,8 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberUpdatedMarkerState
+import com.zawwinnaung.fitnesstracker.data.mapper.toRoutePointList
 import com.zawwinnaung.fitnesstracker.domain.model.TrackedActivity
-import com.zawwinnaung.fitnesstracker.domain.model.toLatLngList
 import com.zawwinnaung.fitnesstracker.ui.components.AppCard
 import com.zawwinnaung.fitnesstracker.ui.components.MyTopAppBar
 import com.zawwinnaung.fitnesstracker.util.formatLongToReadableTime
@@ -44,10 +46,11 @@ import com.zawwinnaung.fitnesstracker.util.formatLongToReadableTime
 @Composable
 fun TrackingSummaryScreen(
     trackedActivity: TrackedActivity,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    viewModel: TrackingSummaryViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
     val cameraPositionState = rememberCameraPositionState()
-    val coroutineScope = rememberCoroutineScope()
     var isMapLoaded by remember { mutableStateOf(false) }
 //    val uniqueRoutes = trackedActivity.routes.toLatLngList().distinct()
     val uniqueRoutes = listOf(
@@ -159,7 +162,6 @@ fun TrackingSummaryScreen(
                         .padding(vertical = 24.dp),
                     horizontalArrangement = Arrangement.spacedBy(24.dp)
                 ) {
-                    // Discard / Delete Button
                     Button(
                         modifier = Modifier.weight(0.5f),
                         colors = ButtonDefaults.buttonColors(
@@ -174,10 +176,23 @@ fun TrackingSummaryScreen(
                             fontWeight = FontWeight.SemiBold
                         )
                     }
-                    // Save Record Button
                     Button(
                         modifier = Modifier.weight(0.5f),
-                        onClick = {}
+                        onClick = {
+                            viewModel.saveTrackedActivity(
+                                trackedActivity.copy(routes = uniqueRoutes.toRoutePointList()),
+                                onSuccess = {
+                                    Toast.makeText(
+                                        context,
+                                        "Saved Activity Successfully",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    onNavigateBack()
+                                },
+                                onError = { errorMessage ->
+                                    Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
+                                })
+                        }
                     ) {
                         Text(
                             text = "Save",

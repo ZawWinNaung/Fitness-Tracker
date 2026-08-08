@@ -59,6 +59,8 @@ class TrackerService : LifecycleService() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
+        elapsedTime.value = 0L
+        routePoints.value = emptyList()
         when (intent?.action) {
             ACTION_START -> {
                 startForegroundService()

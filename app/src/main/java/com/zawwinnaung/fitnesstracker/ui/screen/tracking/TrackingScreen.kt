@@ -10,7 +10,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -101,34 +106,16 @@ fun TrackingScreen(
                             fontWeight = FontWeight.SemiBold
                         )
 
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 24.dp)
-                                .padding(horizontal = 16.dp),
-                            horizontalArrangement = Arrangement.spacedBy(24.dp)
-                        ) {
-                            Button(
-                                modifier = Modifier.weight(0.5f),
-                                enabled = !isTracking,
-                                onClick = {
-                                    val startIntent =
-                                        Intent(context, TrackerService::class.java).apply {
-                                            action = TrackerService.ACTION_START
-                                        }
-                                    ContextCompat.startForegroundService(context, startIntent)
-                                }) {
-                                Text(
-                                    text = "Start",
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.onPrimary,
-                                    fontWeight = FontWeight.SemiBold
-                                )
-                            }
-                            Button(
-                                modifier = Modifier.weight(0.5f),
-                                enabled = isTracking,
-                                onClick = {
+                        Button(
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 24.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = if (isTracking) MaterialTheme.colorScheme.errorContainer
+                                else MaterialTheme.colorScheme.primary,
+                                contentColor = if (isTracking) MaterialTheme.colorScheme.onErrorContainer
+                                else MaterialTheme.colorScheme.onPrimary
+                            ),
+                            onClick = {
+                                if (isTracking) {
                                     val stopIntent =
                                         Intent(context, TrackerService::class.java).apply {
                                             action = TrackerService.ACTION_STOP
@@ -140,11 +127,26 @@ fun TrackingScreen(
                                         routes = route
                                     )
                                     onNavigateToSummary(trackedActivity)
-                                }) {
+                                } else {
+                                    val startIntent =
+                                        Intent(context, TrackerService::class.java).apply {
+                                            action = TrackerService.ACTION_START
+                                        }
+                                    ContextCompat.startForegroundService(context, startIntent)
+                                }
+                            }
+                        ) {
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = if (isTracking) Icons.Default.Stop else Icons.Default.PlayArrow,
+                                    contentDescription = if (isTracking) "Stop" else "Start"
+                                )
                                 Text(
-                                    text = "Stop",
+                                    text = if (isTracking) "Stop" else "Start",
                                     style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.onPrimary,
                                     fontWeight = FontWeight.SemiBold
                                 )
                             }
