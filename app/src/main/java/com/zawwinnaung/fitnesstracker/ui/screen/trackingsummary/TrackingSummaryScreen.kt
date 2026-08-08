@@ -30,13 +30,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapProperties
+import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberUpdatedMarkerState
+import com.zawwinnaung.fitnesstracker.data.mapper.toLatLngList
 import com.zawwinnaung.fitnesstracker.data.mapper.toRoutePointList
 import com.zawwinnaung.fitnesstracker.domain.model.TrackedActivity
 import com.zawwinnaung.fitnesstracker.ui.components.AppCard
@@ -52,11 +54,15 @@ fun TrackingSummaryScreen(
     val context = LocalContext.current
     val cameraPositionState = rememberCameraPositionState()
     var isMapLoaded by remember { mutableStateOf(false) }
-//    val uniqueRoutes = trackedActivity.routes.toLatLngList().distinct()
-    val uniqueRoutes = listOf(
-        LatLng(16.8409383, 96.173525),
-        LatLng(16.8459383, 96.178525)
-    )
+    val uniqueRoutes = trackedActivity.routes.toLatLngList().distinct()
+
+    val uiSettings = remember {
+        MapUiSettings(
+            zoomControlsEnabled = false,
+            zoomGesturesEnabled = true
+        )
+    }
+
 
     LaunchedEffect(isMapLoaded, uniqueRoutes) {
         if (isMapLoaded && uniqueRoutes.isNotEmpty()) {
@@ -137,6 +143,7 @@ fun TrackingSummaryScreen(
                     GoogleMap(
                         modifier = Modifier.fillMaxSize(),
                         cameraPositionState = cameraPositionState,
+                        uiSettings = uiSettings,
                         onMapLoaded = {
                             isMapLoaded = true
                         }

@@ -24,15 +24,20 @@ sealed interface Route : NavKey {
     data object UpdateProfile : Route, NavKey
 
     @Serializable
-    data object Map : Route, NavKey
-
-    @Serializable
     data class Tracking(
         val activity: Activity
     ) : Route, NavKey
 
     @Serializable
     data class TrackingSummary(
+        val trackedActivity: TrackedActivity
+    ) : Route, NavKey
+
+    @Serializable
+    data object History : Route, NavKey
+
+    @Serializable
+    data class HistoryDetail(
         val trackedActivity: TrackedActivity
     ) : Route, NavKey
 }

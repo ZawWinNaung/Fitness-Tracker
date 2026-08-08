@@ -94,15 +94,17 @@ class TrackerService : LifecycleService() {
             .setOngoing(true)
             .build()
 
+        val foregroundServiceType = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION
+        } else {
+            0
+        }
+
         ServiceCompat.startForeground(
             this,
             1,
             notification,
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION
-            } else {
-                0
-            }
+            foregroundServiceType
         )
 
         trackingState.value = true

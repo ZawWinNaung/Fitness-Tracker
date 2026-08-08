@@ -1,5 +1,6 @@
 package com.zawwinnaung.fitnesstracker.navigation
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -14,7 +15,9 @@ import com.zawwinnaung.fitnesstracker.ui.screen.register.RegisterScreen
 fun AuthNavigation() {
     val authBackStack = rememberNavBackStack(Route.Login)
 
-    Scaffold() { innerPadding ->
+    Scaffold(
+        modifier = Modifier.fillMaxSize()
+    ) { innerPadding ->
         NavDisplay(
             modifier = Modifier.padding(innerPadding),
             backStack = authBackStack,
