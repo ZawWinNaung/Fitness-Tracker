@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.zawwinnaung.fitnesstracker.data.local.FitnessTrackerDatabase
 import com.zawwinnaung.fitnesstracker.data.local.dao.ActivityDao
+import com.zawwinnaung.fitnesstracker.data.local.dao.TrackedActivityDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,5 +34,13 @@ object DatabaseModule {
         database: FitnessTrackerDatabase
     ): ActivityDao {
         return database.activityDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideTrackedActivityDao(
+        database: FitnessTrackerDatabase
+    ): TrackedActivityDao {
+        return database.trackedActivityDao()
     }
 }
