@@ -1,6 +1,8 @@
 package com.zawwinnaung.fitnesstracker.ui.screen.tracking
 
+import android.Manifest
 import android.content.Intent
+import android.os.Build
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,6 +33,8 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.zawwinnaung.fitnesstracker.data.service.TrackerService
 import com.zawwinnaung.fitnesstracker.domain.model.Activity
 import com.zawwinnaung.fitnesstracker.domain.model.TrackedActivity
@@ -38,6 +42,7 @@ import com.zawwinnaung.fitnesstracker.ui.components.AppCard
 import com.zawwinnaung.fitnesstracker.ui.components.MyTopAppBar
 import com.zawwinnaung.fitnesstracker.util.formatTime
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun TrackingScreen(
     activity: Activity,
@@ -48,7 +53,17 @@ fun TrackingScreen(
     val context = LocalContext.current
     val isTracking by viewModel.isTracking.collectAsStateWithLifecycle()
     val elapsedSeconds by viewModel.elapsedSeconds.collectAsStateWithLifecycle()
-    val route by viewModel.route.collectAsStateWithLifecycle()
+
+    val permissionsToRequest = mutableListOf(
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.ACCESS_COARSE_LOCATION
+    )
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        permissionsToRequest.add(Manifest.permission.POST_NOTIFICATIONS)
+    }
+
+    val permissionState = rememberMultiplePermissionsState(permissions = permissionsToRequest)
 
     val startTrackingAction = {
         val startIntent = Intent(context, TrackerService::class.java).apply {
@@ -126,7 +141,9 @@ fun TrackingScreen(
                         )
 
                         Button(
-                            modifier = Modifier.padding(horizontal = 16.dp).padding(top = 24.dp),
+                            modifier = Modifier
+                                .padding(horizontal = 16.dp)
+                                .padding(top = 24.dp),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = if (isTracking) MaterialTheme.colorScheme.errorContainer
                                 else MaterialTheme.colorScheme.primary,
@@ -137,7 +154,11 @@ fun TrackingScreen(
                                 if (isTracking) {
                                     stopTrackingAction()
                                 } else {
-                                    startTrackingAction()
+                                    if (permissionState.allPermissionsGranted) {
+                                        startTrackingAction()
+                                    } else {
+                                        permissionState.launchMultiplePermissionRequest()
+                                    }
                                 }
                             }
                         ) {
@@ -161,6 +182,5 @@ fun TrackingScreen(
                 }
             }
         }
-
     }
 }

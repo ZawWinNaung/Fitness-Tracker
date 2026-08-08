@@ -4,6 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -19,8 +20,9 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.zawwinnaung.fitnesstracker.ui.components.MyNavigationBar
+import com.zawwinnaung.fitnesstracker.ui.screen.history.HistoryScreen
+import com.zawwinnaung.fitnesstracker.ui.screen.historydetail.HistoryDetailScreen
 import com.zawwinnaung.fitnesstracker.ui.screen.home.HomeScreen
-import com.zawwinnaung.fitnesstracker.ui.screen.map.MapScreen
 import com.zawwinnaung.fitnesstracker.ui.screen.profile.ProfileScreen
 import com.zawwinnaung.fitnesstracker.ui.screen.tracking.TrackingScreen
 import com.zawwinnaung.fitnesstracker.ui.screen.trackingsummary.TrackingSummaryScreen
@@ -29,6 +31,7 @@ import com.zawwinnaung.fitnesstracker.ui.screen.updateprofile.UpdateProfileScree
 @Composable
 fun MainNavigation() {
     val homeBackStack = rememberNavBackStack(Route.Home)
+    val historyBackStack = rememberNavBackStack(Route.History)
     val profileBackStack = rememberNavBackStack(Route.Profile)
 
     var currentTab by remember { mutableStateOf<NavKey>(Route.Home) }
@@ -39,10 +42,12 @@ fun MainNavigation() {
 
     val activeBackStack = when (currentTab) {
         is Route.Home -> homeBackStack
+        is Route.History -> historyBackStack
         is Route.Profile -> profileBackStack
         else -> homeBackStack
     }
     Scaffold(
+        modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
 
         Box(
@@ -113,11 +118,27 @@ fun MainNavigation() {
                             }
                         }
 
-                        is Route.Map -> {
+                        is Route.History -> {
                             NavEntry(key = key) {
-                                MapScreen()
+                                HistoryScreen(
+                                    navigateToDetail = { activity ->
+                                        activeBackStack.add(Route.HistoryDetail(activity))
+                                    }
+                                )
                             }
                         }
+
+                        is Route.HistoryDetail -> {
+                            NavEntry(key = key) {
+                                HistoryDetailScreen(
+                                    trackedActivity = key.trackedActivity,
+                                    onNavigateBack = {
+                                        activeBackStack.remove(Route.HistoryDetail(key.trackedActivity))
+                                    }
+                                )
+                            }
+                        }
+
 
                         else -> throw RuntimeException("Invalid NavKey.")
                     }

@@ -1,6 +1,7 @@
 package com.zawwinnaung.fitnesstracker.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -37,7 +38,11 @@ fun MyNavigationBar(
             ),
     ) {
         Surface(
-            modifier = Modifier,
+            modifier = Modifier.border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outlineVariant,
+                shape = RoundedCornerShape(32.dp)
+            ),
             shape = RoundedCornerShape(32.dp),
             color = MaterialTheme.colorScheme.surfaceVariant,
         ) {

@@ -12,4 +12,6 @@ interface DbRepository {
     suspend fun saveTrackedActivity(trackedActivity: TrackedActivitiesEntity)
 
     suspend fun getAllTrackedActivities(): Flow<List<TrackedActivitiesEntity>>
+
+    suspend fun deleteTrackedActivityById(id: Int)
 }

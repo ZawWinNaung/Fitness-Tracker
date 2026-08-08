@@ -14,8 +14,8 @@ interface TrackedActivityDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertActivity(activity: TrackedActivitiesEntity)
 
-    @Delete
-    suspend fun deleteActivity(activity: TrackedActivitiesEntity)
+    @Query("DELETE FROM tracked_activities WHERE id = :id")
+    suspend fun deleteActivityById(id: Int)
 
     @Query("SELECT * FROM tracked_activities ORDER BY timestamp DESC")
     fun getAllActivities(): Flow<List<TrackedActivitiesEntity>>

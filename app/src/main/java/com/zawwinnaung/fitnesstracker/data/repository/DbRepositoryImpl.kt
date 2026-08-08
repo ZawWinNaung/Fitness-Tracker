@@ -29,4 +29,8 @@ class DbRepositoryImpl @Inject constructor(
     override suspend fun getAllTrackedActivities(): Flow<List<TrackedActivitiesEntity>> {
         return trackedActivityDao.getAllActivities()
     }
+
+    override suspend fun deleteTrackedActivityById(id: Int) {
+        trackedActivityDao.deleteActivityById(id)
+    }
 }
