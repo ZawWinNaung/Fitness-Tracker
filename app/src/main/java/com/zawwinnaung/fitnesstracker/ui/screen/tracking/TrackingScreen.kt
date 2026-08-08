@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.zawwinnaung.fitnesstracker.data.service.TrackerService
 import com.zawwinnaung.fitnesstracker.domain.model.Activity
@@ -42,11 +43,29 @@ fun TrackingScreen(
     activity: Activity,
     onNavigateBack: (Activity) -> Unit,
     onNavigateToSummary: (TrackedActivity) -> Unit,
+    viewModel: TrackingViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    val isTracking by TrackerService.trackingState.collectAsStateWithLifecycle()
-    val elapsedSeconds by TrackerService.elapsedTime.collectAsStateWithLifecycle()
-    val route by TrackerService.routePoints.collectAsStateWithLifecycle()
+    val isTracking by viewModel.isTracking.collectAsStateWithLifecycle()
+    val elapsedSeconds by viewModel.elapsedSeconds.collectAsStateWithLifecycle()
+    val route by viewModel.route.collectAsStateWithLifecycle()
+
+    val startTrackingAction = {
+        val startIntent = Intent(context, TrackerService::class.java).apply {
+            action = TrackerService.ACTION_START
+        }
+        ContextCompat.startForegroundService(context, startIntent)
+    }
+
+    val stopTrackingAction = {
+        val stopIntent = Intent(context, TrackerService::class.java).apply {
+            action = TrackerService.ACTION_STOP
+        }
+        context.startService(stopIntent)
+        val trackedActivity = viewModel.createTrackedActivity(activity)
+        onNavigateToSummary(trackedActivity)
+    }
+
     Column(
         modifier = Modifier.fillMaxSize(),
     ) {
@@ -107,7 +126,7 @@ fun TrackingScreen(
                         )
 
                         Button(
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 24.dp),
+                            modifier = Modifier.padding(horizontal = 16.dp).padding(top = 24.dp),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = if (isTracking) MaterialTheme.colorScheme.errorContainer
                                 else MaterialTheme.colorScheme.primary,
@@ -116,23 +135,9 @@ fun TrackingScreen(
                             ),
                             onClick = {
                                 if (isTracking) {
-                                    val stopIntent =
-                                        Intent(context, TrackerService::class.java).apply {
-                                            action = TrackerService.ACTION_STOP
-                                        }
-                                    context.startService(stopIntent)
-                                    val trackedActivity = TrackedActivity(
-                                        activity = activity,
-                                        time = elapsedSeconds,
-                                        routes = route
-                                    )
-                                    onNavigateToSummary(trackedActivity)
+                                    stopTrackingAction()
                                 } else {
-                                    val startIntent =
-                                        Intent(context, TrackerService::class.java).apply {
-                                            action = TrackerService.ACTION_START
-                                        }
-                                    ContextCompat.startForegroundService(context, startIntent)
+                                    startTrackingAction()
                                 }
                             }
                         ) {
