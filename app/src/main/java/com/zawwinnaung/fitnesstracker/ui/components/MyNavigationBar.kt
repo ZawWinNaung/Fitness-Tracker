@@ -30,7 +30,7 @@ fun MyNavigationBar(
 
     Box(
         modifier = modifier
-            .padding(bottom = 8.dp)
+            .padding(bottom = 16.dp)
             .shadow(
                 elevation = 4.dp,
                 shape = RoundedCornerShape(32.dp),
