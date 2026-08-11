@@ -20,8 +20,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.zawwinnaung.fitnesstracker.domain.model.TrackedActivity
+import com.zawwinnaung.fitnesstracker.util.formatDateTimestamp
 import com.zawwinnaung.fitnesstracker.util.formatLongToReadableTime
 import com.zawwinnaung.fitnesstracker.util.formatTimestamp
 
@@ -62,32 +64,42 @@ fun HistoryItem(
 
             Column(
                 modifier = Modifier.weight(1f),
+                horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                Text(
-                    text = trackedActivity.activity.title,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = trackedActivity.activity.title,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
 
-                Text(
-                    text = formatTimestamp(trackedActivity.timestamp),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.outline
-                )
-            }
-            Surface(
-                shape = RoundedCornerShape(8.dp),
-                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
-            ) {
-                Text(
-                    text = formatLongToReadableTime(trackedActivity.time),
-                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.primary
-                )
+                    Text(
+                        text = formatDateTimestamp(trackedActivity.timestamp),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.outline
+                    )
+                }
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(8.dp),
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                ) {
+                    Text(
+                        text = formatLongToReadableTime(trackedActivity.time),
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.primary,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
         }
     }
