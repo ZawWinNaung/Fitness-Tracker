@@ -3,6 +3,7 @@ package com.zawwinnaung.fitnesstracker.data.service
 import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Looper
@@ -26,22 +27,36 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
 import android.content.pm.ServiceInfo
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import androidx.core.app.ServiceCompat
+import kotlin.getValue
 
 @AndroidEntryPoint
-class TrackerService : LifecycleService() {
+class TrackerService : LifecycleService(), SensorEventListener {
     @Inject
     lateinit var fusedLocationClient: FusedLocationProviderClient
-
     private val serviceScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    private val sensorManager by lazy { getSystemService(SENSOR_SERVICE) as SensorManager }
+    private var stepCounterSensor: Sensor? = null
+    private var initialStepCount = -1f
 
     companion object {
         val trackingState = MutableStateFlow(false)
         val elapsedTime = MutableStateFlow(0L)
         val routePoints = MutableStateFlow<List<RoutePoint>>(emptyList())
+        val currentSteps = MutableStateFlow(0)
 
         const val ACTION_START = "ACTION_START"
         const val ACTION_STOP = "ACTION_STOP"
+        const val EXTRA_ACTIVITY_TYPE = "EXTRA_ACTIVITY_TYPE"
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        stepCounterSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR)
     }
 
     private val locationCallback = object : LocationCallback() {
@@ -61,11 +76,18 @@ class TrackerService : LifecycleService() {
         super.onStartCommand(intent, flags, startId)
         elapsedTime.value = 0L
         routePoints.value = emptyList()
+        currentSteps.value = 0
         when (intent?.action) {
             ACTION_START -> {
+                val currentActivityType = intent.getStringExtra(EXTRA_ACTIVITY_TYPE) ?: "Walking"
                 startForegroundService()
                 startTimer()
                 startLocationUpdates()
+                if (currentActivityType.equals("Running", ignoreCase = true) ||
+                    currentActivityType.equals("Walking", ignoreCase = true)
+                ) {
+                    startStepCounter()
+                }
             }
 
             ACTION_STOP -> {
@@ -94,11 +116,12 @@ class TrackerService : LifecycleService() {
             .setOngoing(true)
             .build()
 
-        val foregroundServiceType = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION
-        } else {
-            0
-        }
+        val foregroundServiceType =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION or ServiceInfo.FOREGROUND_SERVICE_TYPE_HEALTH
+            } else {
+                0
+            }
 
         ServiceCompat.startForeground(
             this,
@@ -131,9 +154,25 @@ class TrackerService : LifecycleService() {
         )
     }
 
+    private fun startStepCounter() {
+        stepCounterSensor?.let { sensor ->
+            sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_UI)
+        }
+    }
+
+    override fun onSensorChanged(event: SensorEvent?) {
+        if (event?.sensor?.type == Sensor.TYPE_STEP_DETECTOR) {
+            currentSteps.value += 1
+        }
+    }
+
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+    }
+
     private fun stopForegroundService() {
         trackingState.value = false
         fusedLocationClient.removeLocationUpdates(locationCallback)
+        sensorManager.unregisterListener(this)
         stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
     }

@@ -20,6 +20,7 @@ class GetAllTrackedActivitiesUseCase @Inject constructor(
                         title = entity.title,
                         img = entity.img
                     ),
+                    steps = entity.steps,
                     time = entity.elapsedTime,
                     routes = entity.routePoints,
                     timestamp = entity.timestamp

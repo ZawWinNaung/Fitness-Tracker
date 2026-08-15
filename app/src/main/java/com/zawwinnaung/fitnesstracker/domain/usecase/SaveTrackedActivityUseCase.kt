@@ -14,6 +14,7 @@ class SaveTrackedActivityUseCase @Inject constructor(
                 activityId = trackedActivity.activity.id,
                 title = trackedActivity.activity.title,
                 img = trackedActivity.activity.img,
+                steps = trackedActivity.steps,
                 elapsedTime = trackedActivity.time,
                 routePoints = trackedActivity.routes
             )
