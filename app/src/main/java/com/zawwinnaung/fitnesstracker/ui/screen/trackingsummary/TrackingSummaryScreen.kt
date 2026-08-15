@@ -123,7 +123,7 @@ fun TrackingSummaryScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 16.dp),
-                    text = "Awesome job! You worked out for ${
+                    text = "Duration : ${
                         formatLongToReadableTime(
                             trackedActivity.time
                         )
@@ -132,6 +132,19 @@ fun TrackingSummaryScreen(
                     color = MaterialTheme.colorScheme.onBackground,
                     fontWeight = FontWeight.SemiBold
                 )
+                if (trackedActivity.activity.title.equals("Running", ignoreCase = true) ||
+                    trackedActivity.activity.title.equals("Walking", ignoreCase = true)
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 4.dp),
+                        text = "Steps : ${trackedActivity.steps}",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
 
                 AppCard(
                     modifier = Modifier

@@ -90,15 +90,32 @@ fun HistoryItem(
                     shape = RoundedCornerShape(8.dp),
                     color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
                 ) {
-                    Text(
-                        text = formatLongToReadableTime(trackedActivity.time),
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.primary,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                    Row() {
+                        if (trackedActivity.activity.title.equals("Running", ignoreCase = true) ||
+                            trackedActivity.activity.title.equals("Walking", ignoreCase = true)
+                        ) {
+                            Text(
+                                text = "${trackedActivity.steps} Steps",
+                                modifier = Modifier
+                                    .padding(vertical = 6.dp)
+                                    .padding(start = 10.dp),
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.primary,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
+                        Text(
+                            text = formatLongToReadableTime(trackedActivity.time),
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.primary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
                 }
             }
         }

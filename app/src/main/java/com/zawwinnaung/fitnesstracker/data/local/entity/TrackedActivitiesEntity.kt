@@ -10,6 +10,7 @@ data class TrackedActivitiesEntity(
     val activityId: Int,
     val title: String,
     val img: Int,
+    val steps: Int = 0,
     val elapsedTime: Long,
     val routePoints: List<RoutePoint>,
     val timestamp: Long = System.currentTimeMillis()
