@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
@@ -35,7 +36,9 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.zawwinnaung.fitnesstracker.R
 import com.zawwinnaung.fitnesstracker.data.service.TrackerService
+import com.zawwinnaung.fitnesstracker.data.service.TrackerService.Companion.EXTRA_ACTIVITY_TYPE
 import com.zawwinnaung.fitnesstracker.domain.model.Activity
 import com.zawwinnaung.fitnesstracker.domain.model.TrackedActivity
 import com.zawwinnaung.fitnesstracker.ui.components.AppCard
@@ -53,11 +56,16 @@ fun TrackingScreen(
     val context = LocalContext.current
     val isTracking by viewModel.isTracking.collectAsStateWithLifecycle()
     val elapsedSeconds by viewModel.elapsedSeconds.collectAsStateWithLifecycle()
+    val currentSteps by viewModel.currentSteps.collectAsStateWithLifecycle()
 
     val permissionsToRequest = mutableListOf(
         Manifest.permission.ACCESS_FINE_LOCATION,
         Manifest.permission.ACCESS_COARSE_LOCATION
     )
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        permissionsToRequest.add(Manifest.permission.ACTIVITY_RECOGNITION)
+    }
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         permissionsToRequest.add(Manifest.permission.POST_NOTIFICATIONS)
@@ -68,6 +76,7 @@ fun TrackingScreen(
     val startTrackingAction = {
         val startIntent = Intent(context, TrackerService::class.java).apply {
             action = TrackerService.ACTION_START
+            putExtra(EXTRA_ACTIVITY_TYPE, activity.title)
         }
         ContextCompat.startForegroundService(context, startIntent)
     }
@@ -139,6 +148,26 @@ fun TrackingScreen(
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontWeight = FontWeight.SemiBold
                         )
+
+                        if (activity.title.equals("Running", ignoreCase = true) ||
+                            activity.title.equals("Walking", ignoreCase = true)
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    modifier = Modifier.size(28.dp),
+                                    painter = painterResource(id = R.drawable.outline_directions_walk),
+                                    contentDescription = "Steps"
+                                )
+                                Text(
+                                    text = currentSteps.toString(),
+                                    style = MaterialTheme.typography.displaySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            }
+                        }
 
                         Button(
                             modifier = Modifier
